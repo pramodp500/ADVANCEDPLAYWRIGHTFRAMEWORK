@@ -1,0 +1,42 @@
+{
+  "name": "advancedplaywrightframework",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:debug": "playwright test --debug",
+    "test:e2e": "playwright test --grep @e2e",
+    "test:p0": "playwright test --grep @P0",
+    "test:report": "npx allure generate ./allure-results --clean",
+    "test:LOR": "playwright test --project=LOR",
+    "test:report-ci": "playwright test --reporter=html",
+    "test:linting": "npx eslint .",
+    "typecheck": "npx tsc --noEmit",
+    "format": "npx prettier --check .",
+    "build": "npx tsc",
+    "clean": "rimraf allure-results test-results",
+    "logger": "node scripts/logger.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.1",
+    "allure-playwright": "^3.9.0",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^10.4.0",
+    "csv-parse": "^6.2.1",
+    "dotenv": "^17.4.2",
+    "winston": "^3.19.0",
+    "xlsx": "^0.18.5"
+  }
+}

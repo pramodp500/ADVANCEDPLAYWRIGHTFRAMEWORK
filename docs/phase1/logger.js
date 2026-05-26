@@ -1,0 +1,32 @@
+const { createLogger, format, transports } = require('winston');
+const path = require('path');
+
+const logger = createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: format.combine(
+    format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    format.errors({ stack: true }),
+    format.json()
+  ),
+  transports: [
+    new transports.Console({
+      format: format.combine(
+        format.colorize(),
+        format.printf(({ timestamp, level, message, ...meta }) => {
+          const metaStr = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
+          return `${timestamp} [${level}]: ${message}${metaStr}`;
+        })
+      ),
+    }),
+    new transports.File({ filename: path.join(__dirname, '..', 'logs', 'error.log'), level: 'error' }),
+    new transports.File({ filename: path.join(__dirname, '..', 'logs', 'combined.log') }),
+  ],
+});
+
+if (require.main === module) {
+  const level = process.argv[2] || 'info';
+  const message = process.argv.slice(3).join(' ') || 'Logger script executed';
+  logger.log({ level, message });
+}
+
+module.exports = logger;
