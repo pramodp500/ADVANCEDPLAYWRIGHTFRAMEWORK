@@ -34,31 +34,66 @@ npm test
 | `npm run test:p0` | Run @P0 priority tests |
 | `npm run typecheck` | TypeScript type check |
 | `npm run test:linting` | ESLint check |
+| `npm run test:report-ci` | Run with HTML reporter |
+| `npm run test:LOR` | Run LOR project |
 | `npm run logger` | Run logger utility |
 
 ## Project Structure
 
 ```
 src/
-├── pages/                    # Page Object Models
-│   ├── BasePage.ts           # Abstract base with element helpers & logger
-│   ├── LoginPage.ts          # Login flow
-│   ├── Inventory.ts          # Product listing
-│   ├── ItemDetailPage.ts     # Product details
-│   ├── Cart.ts               # Shopping cart
-│   ├── Checkout1.ts          # Checkout — personal info
-│   ├── Checkout2.ts          # Checkout — payment / overview
-│   └── CheckoutFinal.ts      # Order confirmation
-├── tests/                    # Test specs
-│   ├── login.spec.ts         # Login test with test.step() granularity
-│   └── example.spec.ts       # Playwright intro example
+├── Fixtures/                  # Playwright test fixtures
+│   └── test-base.ts           # Extended base with all page object fixtures
+├── pages/                     # Page Object Models
+│   ├── BasePage.ts            # Abstract base with element helpers & logger
+│   ├── LoginPage.ts           # Login flow
+│   ├── InventoryPage.ts       # Product listing
+│   ├── ItemDetailPage.ts      # Product details
+│   ├── CartPage.ts            # Shopping cart
+│   ├── Checkout1.ts           # Checkout — personal info
+│   ├── Checkout2.ts           # Checkout — overview / finish
+│   └── CheckoutFinal.ts       # Order confirmation
+├── config/
+│   └── index.ts               # Centralised config from env vars
+├── tests/                     # Test specs
+│   ├── login.spec.ts          # Login test with test.step() granularity
+│   ├── end2endcheckout.spec.ts # Full e2e checkout flow with fixtures
+│   └── example.spec.ts        # Playwright intro example
 ├── utils/
-│   ├── logger.ts             # Winston logger (console + file)
-│   ├── CustomReporter.ts     # Real-time HTML report generator
+│   ├── logger.ts              # Winston logger (console + file)
+│   ├── CustomReporter.ts      # Real-time HTML report generator
 │   ├── UtilElementsLocator.ts # Unified element interaction layer
-│   └── DataGenerators.ts     # Faker-based test data factories
-├── testdata/                 # External test data (CSV, XLSX)
+│   └── DataGenerators.ts      # Faker-based test data factories
+├── testdata/                  # External test data (CSV, XLSX)
 ```
+
+## Fixtures
+
+Custom fixtures in `src/Fixtures/test-base.ts` inject page objects directly into tests, removing boilerplate:
+
+```typescript
+import { test, expect } from '../Fixtures/test-base';
+
+test('should complete checkout', async ({ cartPage, checkout1, checkout2, checkoutFinal }) => {
+  await cartPage.addItemById('tta-bolt-tshirt');
+  await cartPage.cartopen();
+  await cartPage.checkoutClick();
+  // ...
+});
+```
+
+Available fixtures: `loginPage`, `inventoryPage`, `cartPage`, `checkout1`, `checkout2`, `checkoutFinal`, `itemDetailPage`.
+
+## Configuration
+
+Environment variables are loaded from `.env` via dotenv and exposed through `src/config/index.ts`:
+
+| Variable | Default | Description |
+|---|---|---|
+| `TTA_USERNAME` | `standard_user` | Login username |
+| `TTA_PASSWORD` | `tta_secret` | Login password |
+| `BASE_URL` | `https://app.thetestingacademy.com` | Application URL |
+| `TTA_ENV` | `qa` | Environment selector (qa/dev/stg/prod) |
 
 ## Page Objects & BasePage
 
@@ -98,6 +133,8 @@ export class LoginPage extends BasePage {
 | **Waits** | `waitForVisible`, `waitForHidden`, `waitForEnabled`, `waitForPageLoad` |
 
 Each action is logged at `debug` level with the target selector.
+
+> **Note:** The framework configures `testIdAttribute: 'data-test'` in `playwright.config.ts` so `getByTestId()` matches the `data-test` attribute used by the TTA Cart application.
 
 ## Test Data Generation
 

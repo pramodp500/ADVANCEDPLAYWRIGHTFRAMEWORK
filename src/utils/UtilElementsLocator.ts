@@ -8,6 +8,7 @@ export type Flex = string | Locator;
 export class UtilElemetLocator {
     private readonly page: Page;
     private readonly log: Logger;
+  getAllTexts: any;
 
     constructor(page: Page, scope: string = 'UtilElementLocator') {
         this.page = page;

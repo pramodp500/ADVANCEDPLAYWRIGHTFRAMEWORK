@@ -2,7 +2,7 @@ import { expect, Locator, Page, test } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class LoginPage extends BasePage {
-  static readonly URL = "https://app.thetestingacademy.com/playwright/ttacart/";
+  static readonly URL = "/playwright/ttacart/";
   readonly page: Page;
   readonly userNameInput: Locator;
   readonly passwordinput: Locator;
