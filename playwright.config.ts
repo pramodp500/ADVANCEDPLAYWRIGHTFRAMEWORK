@@ -43,8 +43,8 @@ export default defineConfig({
   use: {
     testIdAttribute: 'data-test',
     baseURL: resolveBaseURL(),
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    screenshot: 'on',
+    video: 'on',
     trace: 'on-first-retry',
     actionTimeout: 15_000,
     navigationTimeout: 30_000,

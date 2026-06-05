@@ -164,6 +164,12 @@ test('should login with valid credentials', async ({ page }) => {
 });
 ```
 
+## Report Screenshot
+
+![Test Flow Report](docs/test-flow-report.png)
+
+*Custom TTA Reporter showing the end-to-end checkout flow with step-by-step breakdown, timing, and pass/fail status.*
+
 ## Reporting
 
 The `CustomTTAReporter` generates a live-updating HTML report in `tta-report/`:
