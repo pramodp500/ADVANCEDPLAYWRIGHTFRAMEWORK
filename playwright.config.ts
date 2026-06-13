@@ -7,6 +7,7 @@ function resolveBaseURL(): string {
   if (process.env.BASE_URL) return process.env.BASE_URL;
   const env = (process.env.TTA_ENV || 'qa').toLowerCase();
   switch (env) {
+    case 'api': return process.env.API_BASE_URL || 'https://restful-booker.herokuapp.com';
     case 'dev':
     case 'local':
       return process.env.DEV_BASE_URL || 'http://localhost:3000';
@@ -49,6 +50,10 @@ export default defineConfig({
     actionTimeout: 15_000,
     navigationTimeout: 30_000,
     headless: false,
+    extraHTTPHeaders: {
+      'Accept' : 'application/json',
+      "Content-Type": "application/json"
+    }
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
