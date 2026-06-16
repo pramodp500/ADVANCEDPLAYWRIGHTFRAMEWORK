@@ -58,13 +58,17 @@ src/
 ├── tests/                     # Test specs
 │   ├── login.spec.ts          # Login test with test.step() granularity
 │   ├── end2endcheckout.spec.ts # Full e2e checkout flow with fixtures
-│   └── example.spec.ts        # Playwright intro example
+│   ├── example.spec.ts        # Playwright intro example
+│   └── API_Helper/            # API tests using APIHelper utility
+│       ├── create_booking.spec.ts  # POST create booking with logger + test.step
+│       └── update.spec.ts     # PUT update booking with auth + logger + test.step
 ├── utils/
 │   ├── logger.ts              # Winston logger (console + file)
 │   ├── CustomReporter.ts      # Real-time HTML report generator
 │   ├── UtilElementsLocator.ts # Unified element interaction layer
-│   └── DataGenerators.ts      # Faker-based test data factories
-├── testdata/                  # External test data (CSV, XLSX)
+│   ├── DataGenerators.ts      # Faker-based test data factories
+│   ├── APIHelper.ts           # API request wrapper (GET/POST/PUT/DELETE/PATCH + retry)
+│   └── stepHelper.ts          # Step-level screenshot helper
 ```
 
 ## Fixtures
@@ -135,6 +139,57 @@ export class LoginPage extends BasePage {
 Each action is logged at `debug` level with the target selector.
 
 > **Note:** The framework configures `testIdAttribute: 'data-test'` in `playwright.config.ts` so `getByTestId()` matches the `data-test` attribute used by the TTA Cart application.
+
+## APIHelper Utility
+
+`src/utils/APIHelper.ts` wraps `APIRequestContext` for clean API testing:
+
+| Method | Description |
+|---|---|
+| `callApi(options)` | Generic request with `ApiRequestOptions` (url, method, headers, data, params, timeout) |
+| `get(url, options?)` | GET shorthand |
+| `post(url, options?)` | POST shorthand |
+| `put(url, options?)` | PUT shorthand |
+| `delete(url, options?)` | DELETE shorthand |
+| `patch(url, options?)` | PATCH shorthand |
+| `retryApiCall(options, retryOptions)` | Retry with polling until a condition is met |
+| `parseJsonResponse<T>(response)` | Typed JSON deserialization |
+| `isSuccessStatus(status)` | Check if 2xx |
+| `isFailureStatus(status)` | Check if 4xx+ |
+
+Example usage in tests:
+
+```typescript
+const api = new APIHelper(request);
+const response = await api.callApi({
+    url: '/booking',
+    method: 'POST',
+    data: payload,
+});
+```
+
+## Step Helper
+
+`src/utils/stepHelper.ts` provides a `step()` function that wraps `test.step()` with automatic full-page screenshot capture after each step, enabling visual diff in reports.
+
+```typescript
+import { step } from '../utils/stepHelper';
+
+await step(page, 'Login with credentials', async () => {
+    await loginPage.loginAs(username, password);
+});
+```
+
+## Logger Integration
+
+All tests — both UI and API — use `logger.info()` at each step for consistent structured logging in console and `logs/combined.log`. API tests log request payloads, response statuses, and response bodies for full traceability.
+
+```typescript
+import logger from '../utils/logger';
+
+logger.info('Sending POST request to /booking');
+logger.info(`Response status: ${res.status()}`);
+```
 
 ## Test Data Generation
 
