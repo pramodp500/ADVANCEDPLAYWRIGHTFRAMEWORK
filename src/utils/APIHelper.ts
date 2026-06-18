@@ -1,4 +1,5 @@
 import {Page,APIResponse , APIRequestContext} from "@playwright/test";
+import { Booking } from "../api/BookingApi";
 
 export type ApiContext = Page | APIRequestContext;
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
@@ -81,8 +82,8 @@ export class APIHelper {
     async post(url: string, options?: Omit<ApiRequestOptions, 'method' | 'url'>): Promise<APIResponse> {
         return this.callApi({ url, method: 'POST', ...options });
     }
-    async put(url: string, options?: Omit<ApiRequestOptions, 'method' | 'url'>): Promise<APIResponse> {
-        return this.callApi({ url, method: 'PUT', ...options });
+    async put(url: string, payload: Booking, options?: Omit<ApiRequestOptions, 'method' | 'url'>): Promise<APIResponse> {
+        return this.callApi({ url, method: 'PUT', data: payload, ...options });
     }
     async delete(url: string, options?: Omit<ApiRequestOptions, 'method' | 'url'>): Promise<APIResponse> {
         return this.callApi({ url, method: 'DELETE', ...options });
