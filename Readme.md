@@ -1,6 +1,6 @@
-# 🎭 Advanced Playwright Framework — TTA Cart
+# 🎭 Advanced Playwright Framework
 
-A scalable test automation framework for [The Testing Academy](https://thetestingacademy.com) TTA Cart application, built with Playwright, TypeScript, and Winston logging.
+A scalable test automation framework for Cart application, built with Playwright, TypeScript, and Winston logging.
 
 ## Tech Stack
 
