@@ -49,7 +49,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     actionTimeout: 15_000,
     navigationTimeout: 30_000,
-    headless: false,
+    headless: true,
     extraHTTPHeaders: {
       'Accept' : 'application/json',
       "Content-Type": "application/json"
