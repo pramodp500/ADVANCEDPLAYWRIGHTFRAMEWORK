@@ -1,4 +1,4 @@
-import { expect, Locator, Page, test } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class LoginPage extends BasePage {
@@ -22,14 +22,8 @@ export class LoginPage extends BasePage {
 
   async loginAs(username: string, password: string): Promise<void> {
     this.log.info(`Logging in as: ${username}`);
-    await test.step(`Fill username: ${username}`, async () => {
-      await this.element.fill(this.userNameInput, username);
-    });
-    await test.step('Fill password', async () => {
-      await this.element.fill(this.passwordinput, password);
-    });
-    await test.step('Click login button', async () => {
-      await this.element.click(this.loginButton);
-    });
+    await this.element.fill(this.userNameInput, username);
+    await this.element.fill(this.passwordinput, password);
+    await this.element.click(this.loginButton);
   }
 }
